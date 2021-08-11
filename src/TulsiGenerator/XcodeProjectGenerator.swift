@@ -638,7 +638,7 @@ final class XcodeProjectGenerator {
 
     let workspaceSharedDataURL = projectURL.appendingPathComponent("project.xcworkspace/xcshareddata")
     let sharedWorkspaceSettings: [String: Any] = [
-      "BuildSystemType": "Original",
+      "PreviewsEnabled": false as AnyObject,
       "DisableBuildSystemDeprecationWarning": true as AnyObject,
       "IDEWorkspaceSharedSettings_AutocreateContextsIfNeeded": false as AnyObject,
     ]
