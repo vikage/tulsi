@@ -1668,6 +1668,8 @@ final class PBXTargetGenerator: PBXTargetGeneratorProtocol {
     if pbxTargetType == .AppClip {
       buildSettings["CODE_SIGNING_ALLOWED"] = "NO"
     }
+        
+    buildSettings["CODE_SIGNING_ALLOWED"] = "NO"
 
     // bazel_build.py uses this to determine if it needs to pass the --xcode_version flag, as the
     // flag can have implications for caching even if the user's active Xcode version is the same
