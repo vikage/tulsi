@@ -1599,17 +1599,7 @@ final class PBXTargetGenerator: PBXTargetGeneratorProtocol {
   }
 
   static func indexerNameForTargetName(_ targetName: String, hash: Int, suffix: String?) -> String {
-    let normalizedTargetName: String
-    if targetName.count > MaxIndexerNameLength {
-      let endIndex = targetName.index(targetName.startIndex, offsetBy: MaxIndexerNameLength - 4)
-      normalizedTargetName = String(targetName[..<endIndex]) + "_etc"
-    } else {
-      normalizedTargetName = targetName
-    }
-    if let suffix = suffix {
-      return String(format: "\(IndexerTargetPrefix)\(normalizedTargetName)_%08X_%@", hash, suffix)
-    }
-    return String(format: "\(IndexerTargetPrefix)\(normalizedTargetName)_%08X", hash)
+    return String(format: "\(targetName)")
   }
 
   // Creates a PBXSourcesBuildPhase with the given references, optionally applying the given
