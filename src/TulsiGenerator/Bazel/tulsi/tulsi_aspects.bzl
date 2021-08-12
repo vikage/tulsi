@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Skylark rules supporting Tulsi.
+"""Starlark rules supporting Tulsi.
 
 This file provides Bazel aspects used to obtain information about a given
 project and pass it back to Tulsi.
@@ -200,9 +200,11 @@ def _convert_outpath_to_symlink_path(path):
 
 def _is_file_a_directory(f):
     """Returns True is the given file is a directory."""
+
     # Starting Bazel 3.3.0, the File type as a is_directory attribute.
     if getattr(f, "is_directory", None):
         return f.is_directory
+
     # If is_directory is not in the File type, fall back to the old method:
     # As of Oct. 2016, Bazel disallows most files without extensions.
     # As a temporary hack, Tulsi treats File instances pointing at extension-less
@@ -738,7 +740,7 @@ def _tulsi_sources_aspect(target, ctx):
         ]
     else:
         # artifacts may be an empty set type, in which case it must be explicitly
-        # set to None to allow Skylark's serialization to work.
+        # set to None to allow Starlark's serialization to work.
         artifacts = None
 
     srcs = (_collect_files(rule, "attr.srcs") +
@@ -910,7 +912,7 @@ def _tulsi_sources_aspect(target, ctx):
         swift_transitive_modules = swift_transitive_modules.to_list()
         objc_module_maps = objc_module_maps.to_list()
         test_deps = None
-        module_name = None
+        module_name = _get_opt_attr(rule_attr, "module_name")
 
     info = _struct_omitting_none(
         artifacts = artifacts,

@@ -404,6 +404,7 @@ final class BazelAspectInfoExtractor: QueuedLogging {
         extensionType = _extensionType
       }
 
+      // print("Label \(ruleLabel). filename \(filename). module_name \(moduleName)")
       let ruleEntry = RuleEntry(label: ruleLabel,
                                 type: ruleType,
                                 attributes: attributes,
