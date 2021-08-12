@@ -243,11 +243,16 @@ final class PBXTargetGenerator: PBXTargetGeneratorProtocol {
       let labelHash: Int
 
       init(ruleEntry: RuleEntry) {
-        self.init(label: ruleEntry.label)
+        self.init(label: ruleEntry.label, moduleName: ruleEntry.moduleName)
       }
 
-      init(label: BuildLabel) {
-        targetName = label.targetName!
+      init(label: BuildLabel, moduleName: String?) {
+        if let moduleName = moduleName, moduleName.isEmpty == false {
+          targetName = moduleName
+        } else {
+          targetName = label.targetName!
+        }
+        
         labelHash = label.hashValue
       }
     }
@@ -321,10 +326,18 @@ final class PBXTargetGenerator: PBXTargetGeneratorProtocol {
         } else {
           deploymentTargetLabel = parentDeploymentTargetLabel
         }
-        return PBXTargetGenerator.indexerNameForTargetName(entry.label.targetName!,
+        return PBXTargetGenerator.indexerNameForTargetName(IndexerData.getTargetNameFromEntry(entry),
                                                            hash: entry.label.hashValue,
                                                            suffix: deploymentTargetLabel)
       }
+    }
+
+    static func getTargetNameFromEntry(_ entry: RuleEntry) -> String {
+      if let moduleName = entry.moduleName, moduleName.isEmpty == false {
+        return moduleName
+      }
+
+      return entry.label.targetName!
     }
 
     /// Indicates whether or not this indexer may be merged with the given indexer.
@@ -1324,7 +1337,7 @@ final class PBXTargetGenerator: PBXTargetGeneratorProtocol {
     // Inherit the resolved values from the indexer.
     let deploymentTarget = ruleEntry.deploymentTarget ?? PBXTargetGenerator.defaultDeploymentTarget()
     let deploymentTargetLabel = IndexerData.deploymentTargetLabel(deploymentTarget)
-    let indexerName = PBXTargetGenerator.indexerNameForTargetName(ruleEntry.label.targetName!,
+    let indexerName = PBXTargetGenerator.indexerNameForTargetName(IndexerData.getTargetNameFromEntry(ruleEntry),
                                                                   hash: ruleEntry.label.hashValue,
                                                                   suffix: deploymentTargetLabel)
     let indexerTarget = indexerTargetByName[indexerName]
@@ -1631,6 +1644,7 @@ final class PBXTargetGenerator: PBXTargetGeneratorProtocol {
   }
 
   static func indexerNameForTargetName(_ targetName: String, hash: Int, suffix: String?) -> String {
+    print("Target name \(targetName)")
     return String(format: "\(targetName)")
   }
 
