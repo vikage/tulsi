@@ -305,7 +305,13 @@ class PBXGroup: PBXReference, Hashable {
     if let value = childGroupsByName[name] {
       return value
     }
-    let value = PBXGroup(name: name, path: path, sourceTree: sourceTree, parent: self)
+
+    var fixPath: String? = path ?? name
+    if name == "Products" {
+      fixPath = nil
+    }
+
+    let value = PBXGroup(name: name, path: fixPath, sourceTree: sourceTree, parent: self)
     childGroupsByName[name] = value
     children.append(value)
     return value
@@ -1362,7 +1368,7 @@ final class PBXProject: PBXObjectProtocol {
         let variantGroup = group.getOrCreateChildVariantGroupByName(name)
         accessedGroups.insert(variantGroup)
 
-        let fileRef = variantGroup.getOrCreateFileReferenceBySourceTree(.Group,
+        let fileRef = variantGroup.getOrCreateFileReferenceBySourceTree(.SourceRoot,
                                                                         path: path,
                                                                         name: lprojName)
         if let ext = name.pbPathExtension, let uti = DirExtensionToUTI[ext] {
@@ -1388,7 +1394,7 @@ final class PBXProject: PBXObjectProtocol {
       accessedGroups.insert(group)
     }
 
-    let fileRef = group.getOrCreateFileReferenceBySourceTree(.Group, path: path)
+    let fileRef = group.getOrCreateFileReferenceBySourceTree(.SourceRoot, path: path)
     return (accessedGroups, fileRef)
   }
 }
